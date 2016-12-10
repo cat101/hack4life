@@ -1,5 +1,5 @@
 # Obtaining root on a Q-See-QT428-418-5 CCTV DVR
-I have had this DVR for several years with no problems. My only disappointment was the lack of web APIs to integrate it into other home automation projects. I had read that older versions of the FW (I have 3.2.0) had a telnet deamon enabled with some default password. I have also read recently that many DVR have been exploited, but I did not want to go into a guessing game so I decided to do a hardware hack.
+I have had this DVR for several years with no problems. My only disappointment was the lack of web APIs to integrate it into other home automation projects. I had read that older versions of the FW (I have 3.2.0) had a telnet deamon enabled with some default password. I have also read recently that many DVRs have been exploited, but I did not want to go into a guessing game so I decided to do a hardware hack.
 
 ## DVR hardware overview
 First let's look at some pics to identify the hardware
@@ -97,6 +97,12 @@ All the DVR software is under /mnt/mtd/ and some runtime parts get unpacked on b
 # Enabling a persistent root access
 Since `telnetd` was already installed on the firmware image all I had to do was add `/usr/sbin/telnetd` to `/etc/init.d/rcS` and change the root password
 
+# Conclusion
+As as side note, I was able to verify that this DVR uses the "Cross Web Server" so it is probably vulnerable to the recent [Mirai attack](http://www.kerneronsec.com/2016/02/remote-code-execution-in-cctv-dvrs-of.html).
+
 # References
 * [CCF-paper-Forensic-reliabilty-DVR](http://www.i-1.nl/blog/wp-content/uploads/CCF-paper-Forensic-reliabilty-DVR.pdf)
 * [Full boot log (taken from the console)](bootlog.txt)
+* [HIVision SDK and documentation files](http://www.openipcam.com/files/ARM9/HiVision/)
+* [TaniDVR - an open source client for QSee DVRs](http://tanidvr.sourceforge.net/)
+* [ZModo Pipe - a connector to get live streams from QSee to ZoneMinder](https://forums.zoneminder.com/viewtopic.php?t=18137)
