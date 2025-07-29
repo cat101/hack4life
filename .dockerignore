@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Jekyll
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# Ruby
+.bundle/
+vendor/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+.mypy_cache/
+
+# Original HTML files (already converted)
+current/
+
+# Scripts
+setup.sh
+update_html_titles.py
+convert_to_jekyll.py

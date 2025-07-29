@@ -1,0 +1,77 @@
+---
+layout: default
+title: "Dissecting a Dragon State 818 MP3 CD Player"
+parent: Dissections & Disassembly
+nav_order: 201
+date: 2009
+---
+
+<!-- page=Dissecting a Dragon State 818 MP3 CD Player -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1244298961 -->
+<!-- ip=190.30.30.51 -->
+<!-- content-type=text/html -->
+<!-- name=lifehacker -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<h1>Dissecting a Dragon State 818 MP3 CD Player (2009)</h1>
+<p>&nbsp;</p>
+<p align="left">&nbsp;Hi!. I've created this simple web page with the idea of collecting all the technical information that has been floating around in the web about the Dragon State 818/Genica/MPTrip/etc. Since these players are pretty sophisticated (functionality wise) it's my belief that there might be hidden service modes built in and also that it shouldn't be hard to modify them (for example to solve the weak laser problem for reading CDRW).</p>
+<p align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To begin this page I'll post the information I've gather myself from my MPTrip. If you want me to add some other information just leave a comment below</p>
+<p align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This page has been <b><font color="#330099">updated on 4/28/2001</font></b> with information provided by <a href="http://131.130.199.155/%7Eaoe/mystuff/hardware/">Alexander Oelzant</a> on his Genica Tavarua MP3 player.</p>
+<h3 align="left">Internal overview of the unit:</h3>
+<p style="text-align: center;"><img src="{{ site.baseurl }}/assets/images/Dissecting a Dragon State 818 MP3 CD Player - Main.jpg"></p>
+<h3>Chips found inside:</h3>
+<ul>
+<li>SEC 020 KS88P2148T
+<blockquote>
+<p>This is the big guy, the CPU that commands the whole unit. It's made by Sansung and provides 48KB internal ROM memory (<a href="Micro/um88c2148_p2148r1.PDF">KS88P2148T</a>)</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>SEC 009 T1.7231MD
+<blockquote>
+<p>This is the MP3 decoder, if you look at the specs it will tell you hat it can decode bitrates up to 320Kbbps. It also features an encoder which I believe is being used to provide the recording capability (<a href="MP3+Decoder/TL7231MD.pdf">TL7231MD</a>)</p>
+</blockquote>
+</li>
+<li>OTI9150:
+<blockquote>
+<p>I believe this chip is the one that controls the CDROM unit (i.e. motors, laser pickup, etc.). I haven't been able to find the specs for this chip, the closest I've found is the <a href="OTI+9790.pdf">OTI 9790</a></p>
+</blockquote>
+</li>
+<li>Technics MN662746RPK
+<blockquote>
+<p>This chips features a full CD-Audio player and a DAC. I haven't been able to find the specs for this chip, the closest I've found is the <a href="CD+Signal+procesor+%28DAC%29/MN662747RPH.pdf">MN662747RPH</a></p>
+</blockquote>
+</li>
+<li>The Laser Block
+<blockquote>
+<p>In my unit there is this label "cms-m91bg6u 0F05". Let me know if you can get some info about it.</p>
+</blockquote>
+</li>
+<li>AN8789FB
+<blockquote>
+<p>I've only found info on this similar chipset <a href="AN8787NSB.pdf">AN8787NSB</a> 4-channel linear driver IC for CD/CD-ROM drive</p>
+</blockquote>
+</li>
+<li>AN8838SB
+<blockquote>
+<p>I've only found info on this similar chipset <a href="AN8839NSB.pdf">AN8839NSB</a> CD-DA head amplifier IC for 3-beam system optical pick-up</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>SEC KA222 (incorrect)
+<blockquote>
+<p>This one is in the area of the board where the audio amplifier seems to be but I'm not sure I've read the correct number.</p>
+</blockquote>
+</li>
+<li>CW41V8164-5
+<blockquote>
+<p>This chip is hidden bellow a cristal oscilator, apparently it provides the memory buffer. The only information avaliable about it is the is manufactured by GoldStart</p>
+</blockquote>
+</li>
+</ul>
+<p>&nbsp;</p>
+
+<!-- pbraw=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 -->

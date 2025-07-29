@@ -1,0 +1,259 @@
+---
+layout: default
+title: "Wemos D1 mini Solar Water Heater Sensor"
+parent: Electronic Hacks & Reverse Engineering
+nav_order: 304
+date: 2021
+---
+
+<!-- page=Wemos D1 mini Solar Water Heater Sensor -->
+<!-- uid=c09a9ae194b07c696a86f6cd327dd70461e67ef9 -->
+<!-- name=hdelaroza -->
+<!-- email=hugodelaroza@gmail.com -->
+<!-- time=1620587952 -->
+<!-- ip=181.1.15.212 -->
+<!-- content-type=text/html -->
+<h1>Wemos D1 mini Solar Water Heater Sensor (2021)</h1>
+<p>Hi oasisone. I took <a href="/w/page/75653090/Arduino%20Solar%20Water%20Heater%20Sensor">cat´s work</a>&nbsp;as a beginnig and embedded it into a code, loaded on a Wemos D1 mini, to connect the sensor over MQTT to Home Assistant. I´m not good programming, so my code is very basic, but it works. Here is the code:</p>
+<p>&nbsp;</p>
+<p>#include &lt;SimpleTimer.h&gt; //<a href="https://github.com/jfturcot/SimpleTimer">https://github.com/jfturcot/SimpleTimer</a></p>
+<p>#include &lt;PubSubClient.h&gt; //<a href="https://github.com/knolleary/pubsubclient">https://github.com/knolleary/pubsubclient</a></p>
+<p>#include &lt;ESP8266WiFi.h&gt;</p>
+<p>#include &lt;ESP8266mDNS.h&gt;</p>
+<p>#include &lt;WiFiUdp.h&gt;</p>
+<p>#include &lt;ArduinoOTA.h&gt; //<a href="https://github.com/esp8266/Arduino/tree/master/libraries/ArduinoOTA">https://github.com/esp8266/Arduino/tree/master/libraries/ArduinoOTA</a></p>
+<p>//////////////////////////////////////////</p>
+<p>#include &lt;ESP8266WebServer.h&gt;</p>
+<p>&nbsp;</p>
+<p>//USER CONFIGURED SECTION START//</p>
+<p>const char* ssid = "MY_WIFI_NETWORK";</p>
+<p>const char* password = "MY_WIFI_PASSWORD";</p>
+<p>const char* host = "termotanque_sensor";</p>
+<p>const char* mensaje = "Sensor termotanque solar: ";</p>
+<p>const char* mqtt_server = "MY_MQTT_SERVER";</p>
+<p>const int mqtt_port = 1883;</p>
+<p>const char *mqtt_user = "MY_MQTT_USERNAME";</p>
+<p>const char *mqtt_pass = "MY_MQTT_PASSWOR";</p>
+<p>const char *mqtt_client_name = "termotanque_sensor"; // Client connections can't have the same connection name</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>const int inPin = 15; //D8, pin where the sensor is connected (has pulldown resistor)</p>
+<p>//long lastPub=0;</p>
+<p>char temp,level;</p>
+<p>char temp2=-1,level2=-1;</p>
+<p>String mensaje_mqtt;</p>
+<p>&nbsp;</p>
+<p>#define TIMEOUT 50000&nbsp; // in microseconds</p>
+<p>#define MARK_HEADER 7000</p>
+<p>#define SPACE_HEADER 3000</p>
+<p>#define MARK 520</p>
+<p>#define SPACE_ONE 1530</p>
+<p>#define SPACE_ZERO 600</p>
+<p>//USER CONFIGURED SECTION END//</p>
+<p>&nbsp;</p>
+<p>ESP8266WebServer server(80);</p>
+<p>&nbsp;</p>
+<p>WiFiClient espClient;</p>
+<p>PubSubClient client(espClient);</p>
+<p>SimpleTimer timer;</p>
+<p>&nbsp;</p>
+<p>bool boot = true;</p>
+<p>&nbsp;</p>
+<p>//Functions</p>
+<p>&nbsp;</p>
+<p>void setup_wifi() {</p>
+<p>&nbsp; // We start by connecting to a WiFi network</p>
+<p>&nbsp; Serial.println();</p>
+<p>&nbsp; Serial.print("Connecting to ");</p>
+<p>&nbsp; Serial.println(ssid);</p>
+<p>&nbsp; WiFi.mode(WIFI_STA); //SACO EL FaryLink</p>
+<p>&nbsp; WiFi.hostname(host);</p>
+<p>&nbsp; WiFi.begin(ssid, password);</p>
+<p>&nbsp;</p>
+<p>&nbsp; while (WiFi.status() != WL_CONNECTED) {</p>
+<p>&nbsp; &nbsp; delay(500);</p>
+<p>&nbsp; &nbsp; Serial.print(".");</p>
+<p>&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; Serial.println("");</p>
+<p>&nbsp; Serial.println("WiFi connected");</p>
+<p>&nbsp; Serial.println("IP address: ");</p>
+<p>&nbsp; Serial.println(WiFi.localIP());</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>void reconnect()&nbsp;</p>
+<p>{</p>
+<p>&nbsp; // Loop until we're reconnected</p>
+<p>&nbsp; int retries = 0;</p>
+<p>&nbsp; while (!client.connected()) {</p>
+<p>&nbsp; &nbsp; if(retries &lt; 15)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Serial.print("Attempting MQTT connection...");</p>
+<p>&nbsp; &nbsp; &nbsp; // Attempt to connect</p>
+<p>&nbsp; &nbsp; &nbsp; if (client.connect(mqtt_client_name, mqtt_user, mqtt_pass))&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Serial.println("connected");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; // Once connected, publish an announcement...</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; if(boot == true)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; client.publish("checkIn/termo_solar","Rebooted");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; boot = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; if(boot == false)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; client.publish("checkIn/termo_soalar","Reconnected");&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; // ... and resubscribe</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; client.subscribe("doorbell/commands");</p>
+<p>&nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; else&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Serial.print("failed, rc=");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Serial.print(client.state());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Serial.println(" try again in 5 seconds");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; retries++;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; // Wait 5 seconds before retrying</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; delay(5000);</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; if(retries &gt; 14)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; ESP.restart();</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp; }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>void checkIn()</p>
+<p>{</p>
+<p>&nbsp; client.publish("checkIn/TermoSolar","OK");</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>//TERMO SOLAR</p>
+<p>int expectPulse(int val){</p>
+<p>&nbsp; unsigned long t=micros();</p>
+<p>&nbsp; while(digitalRead(inPin)==val){</p>
+<p>&nbsp; &nbsp; if( (micros()-t)&gt;TIMEOUT ) return 0;</p>
+<p>&nbsp; }</p>
+<p>&nbsp; return micros()-t;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>bool readTempNLevelSensor(char inPin, char &amp;temp, char &amp;level){</p>
+<p>&nbsp; &nbsp;byte data[5]={0,0,0,0,0};</p>
+<p>&nbsp; &nbsp;unsigned long val1;</p>
+<p>&nbsp; &nbsp;unsigned long st=micros();</p>
+<p>&nbsp; &nbsp;val1 = expectPulse(HIGH);</p>
+<p>&nbsp; &nbsp;if(val1&gt;MARK_HEADER){</p>
+<p>&nbsp; &nbsp; &nbsp;val1 = expectPulse(LOW);</p>
+<p>&nbsp; &nbsp; &nbsp;if(val1&gt;SPACE_HEADER){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;int c=39;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;for(;c&gt;-1;c--){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;val1 = expectPulse(HIGH);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(val1&lt;MARK){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; val1 = expectPulse(LOW);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(val1==0){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Serial.println("Mark error 0");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(val1&lt;SPACE_ZERO){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //0</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //data[c&gt;&gt;3]|=(1&lt;&lt;(c &amp; B111));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }else if(val1&lt;SPACE_ONE){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data[c&gt;&gt;3]|=(1&lt;&lt;(c &amp; B111));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }else{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Serial.print(val1);Serial.println(" Space error");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}else{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Serial.print(val1);Serial.println(" Mark error");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}&nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;// Each reading should not take more than 70ms (use time to detect errors)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;if(micros()-st&lt;70000){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;temp=data[3];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;level=data[2];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Serial.print(data[3]);Serial.print(" ");Serial.println((data[2]));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Serial.print(data[4],HEX);Serial.print(" ");Serial.print(data[3],HEX);Serial.print(" ");Serial.print(data[2],HEX);Serial.print(" ");Serial.print(data[1],HEX);Serial.print(" ");Serial.println(data[0],HEX);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp;}&nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp;return false;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>//Run once setup</p>
+<p>void setup() {</p>
+<p>&nbsp; pinMode(inPin, INPUT);</p>
+<p>&nbsp; Serial.begin(115200);</p>
+<p>&nbsp;</p>
+<p>&nbsp; setup_wifi();</p>
+<p>&nbsp;</p>
+<p>&nbsp; client.setServer(mqtt_server, mqtt_port);</p>
+<p>//&nbsp; client.setCallback(callback);</p>
+<p>&nbsp;</p>
+<p>&nbsp; ArduinoOTA.setHostname("termo_solar");</p>
+<p>&nbsp; ArduinoOTA.begin();&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; timer.setInterval(120000, checkIn);</p>
+<p>//&nbsp; timer.setInterval(500, getFrontState);</p>
+<p>//&nbsp; timer.setInterval(200, getTermoSolar);</p>
+<p>//////////////////////////////////////////</p>
+<p>&nbsp; server.on("/other", []() {&nbsp; &nbsp;//Define the handling function for the path</p>
+<p>&nbsp; &nbsp; &nbsp;server.send(200, "text / plain", "Other URL");</p>
+<p>&nbsp; });</p>
+<p>&nbsp;</p>
+<p>&nbsp; server.on("/", handleRootPath);&nbsp; &nbsp; //Associate the handler function to the path</p>
+<p>&nbsp; server.begin();&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Start the server</p>
+<p>&nbsp; Serial.println("Server listening");</p>
+<p>//////////////////////////////////////////&nbsp;&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>void loop()&nbsp;</p>
+<p>{</p>
+<p>&nbsp; if (!client.connected())&nbsp;</p>
+<p>&nbsp; {</p>
+<p>&nbsp; &nbsp; reconnect();</p>
+<p>&nbsp; }</p>
+<p>////////////////////////////////////////////////////</p>
+<p>&nbsp; server.handleClient();&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Handling of incoming requests</p>
+<p>///////////////////////////////////////////////////</p>
+<p>&nbsp; client.loop();</p>
+<p>&nbsp; ArduinoOTA.handle();</p>
+<p>&nbsp; if(readTempNLevelSensor(inPin, temp, level)){</p>
+<p>//&nbsp; &nbsp; Serial.print(temp,DEC);Serial.print("c ");Serial.println(level,DEC);</p>
+<p>//&nbsp; &nbsp; mensaje_mqtt = String(int (temp))+String(int (level));</p>
+<p>&nbsp; }</p>
+<p>&nbsp; if ((temp==temp2)|| (level==level2)){</p>
+<p>&nbsp; &nbsp; mensaje_mqtt = "{\"Temperature\":\"" +String(int (temp))+"\",\"Level\":\""+String(int (level))+"\"}";</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; Serial.println(mensaje_mqtt);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; char charBuf[mensaje_mqtt.length() + 1];</p>
+<p>&nbsp; &nbsp; mensaje_mqtt.toCharArray(charBuf,mensaje_mqtt.length() + 1);</p>
+<p>&nbsp; &nbsp; client.publish("TermoSolar", charBuf);</p>
+<p>&nbsp; }</p>
+<p>&nbsp; temp2=temp;</p>
+<p>&nbsp; level2=level;</p>
+<p>&nbsp; timer.run();</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>///////////////////////////////////////////////////////////////</p>
+<p>void handleRootPath() {&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Handler for the rooth path</p>
+<p>&nbsp; server.send(200, "text/plain", mensaje_mqtt);</p>
+<p>}</p>
+<p>///////////////////////////////////////////////////////////////</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>I use the web server to show the same json message sent over MQTT, it helps me to debug</p>
+<p>&nbsp;</p>
+<p>Sometimes the sensor changes it´s value, for example from level 4 to level 2 and it returns to level for, all just in a second (I think this is because the sensor is not very stable), so I publish the message only when I have the same reading 2 times.</p>
+<p>&nbsp;</p>
+<p>Maybe you can take my code and improve it.</p>
+<p>&nbsp;</p>
+<p>Hope it helps!!</p>
+<p>&nbsp;</p>
+<!-- pbraw=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 -->
+<h1>Wemos D1 mini Solar Water Heater Sensor (2021)</h1>

@@ -1,6 +1,45 @@
-*.git
-*.hg
-.DS_STORE
+# Jekyll
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Ruby
+.bundle/
+vendor/
+Gemfile.lock
+
+# macOS
 .DS_Store
-_delete/
-*.sublime-*
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.mypy_cache/
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local development
+.env
+.env.local
+
+# Original files (can be excluded after conversion)
+current/
+update_html_titles.py
+convert_to_jekyll.py

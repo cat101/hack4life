@@ -1,0 +1,68 @@
+---
+layout: default
+title: "Hacking the Buffalo WZR-HP-G300NH router"
+parent: Archive
+nav_order: 107
+date: 2014
+---
+
+<!-- page=Hacking the Buffalo WZR-HP-G300NH router -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1413174477 -->
+<!-- ip=181.31.244.184 -->
+<!-- content-type=text/html -->
+<!-- name=cat -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<p>Older installs</p>
+<ul><li><a href="/Original%20OpenWrt%20installation">Original OpenWrt installation</a></li>
+<li><a href="/w/page/61094193/Upgrade%20to%20OpenWRT%20Backfire%2010%2003%201">Upgrade to Backfire 10 03 1</a></li>
+</ul><p>Upgrade to barrier breaker 14.07</p>
+<ul><li>Upgrade using LUCI and the sysupgrade image</li>
+<ul><li>openwrt-ar71xx-generic-wzr-hp-g300nh2-squashfs-sysupgrade.bin</li>
+</ul><li>Install packages</li>
+<ul><li>opkg update </li>
+<li>opkg install nano</li>
+<li>opkg install diffutils </li>
+<li>
+<p>opkg install luci-app-ddns curl</p>
+</li>
+<ul><li>
+<p>mkdir -p /etc/ssl/certs/</p>
+</li>
+<li>
+<p>wget -P /etc/ssl/certs/ <a href="http://curl.haxx.se/ca/cacert.pem">http://curl.haxx.se/ca/cacert.pem</a></p>
+</li>
+</ul><li>
+<p>opkg install luci-app-upnp</p>
+</li>
+<li>opkg install wireless-tools </li>
+<li>opkg install luci-ssl&nbsp;&nbsp;&nbsp;&nbsp; </li>
+</ul><li>Settings &amp; conf files</li>
+<ul><li>Allow local hosts to connect to SSH</li>
+<li>copy ethers &amp; hosts </li>
+<li>Copy from backup</li>
+<ul><li>cp -a mybin/* /;chown -R root.root /mybin</li>
+<li>cp -a www/* /www/</li>
+<ul><li>First remove this </li>
+<li>&nbsp;rm www/index.html</li>
+<li>&nbsp;rm -rf www/luci-static/</li>
+</ul><li>Do a diff with every /etc/config file</li>
+<ul><li>/config/wireless</li>
+<li>/config/dropbear</li>
+<li>cp dropbear/* /etc/dropbear/ </li>
+</ul></ul><li>Install MyHouse </li>
+<ul><li>opkg install haserl</li>
+<li>Enable WOL </li>
+<ul><li>opkg install fping etherwake</li>
+<li>chown root.root /www/cgi-bin/iphone/WOL.sh</li>
+<li>chmod +s /www/cgi-bin/iphone/WOL.sh</li>
+</ul></ul></ul><li>NFS to NAS </li>
+<ul><li>opkg install kmod-fs-nfs nfs-utils </li>
+<li>mkdir /mnt/nas; mkdir /mnt/nas_flash/ </li>
+<li>copy /etc/init.d/mount_nfs and do /etc/init.d/mount_nfs enable </li>
+<ul><li>tried fstab, lUCI mounts and block-mount pkg but they are not ready for NFS mounts</li>
+</ul></ul></ul><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<!-- pbraw=eJyFVW1v2zYQ/q5fcQiwfthGUbLd2HE8Y31ZlgJdUiQrAuxLQVOURVgiOZKK7P76HiU7ltykBWyJ0j33/tzJsLWYXzO+kWoNvhDwts5zVmp4+O+OXH8if4+T5OYarK69sFEts3k+469TnvNEjEbZxYxd8Eycp6/PU5FMZ/lsNhpPJxc8H0VeVmKeTtJxOp1MptNImnk6S+NxGo8mkzidTSKulRfKE78zYu7F1tPCV2WkGCpy5iNRMVnOzaqRG/lnxbxkjtdCcRZzXcXMRgFOHqVdSzVXOiKEwHvmGVzpstSNA3wRLczytsyEBamcZ2XpFtQso0VdLhelXC4YFFbkf5zRWyvRDCt/GSW3RqgH6/G010HXWp0tDxDYA6AvXlC2XFA0GQ3tNtRgjel5mlxM0osx/WzWlmUCjXt98HX3L57eYhdyaYMkTfCSjMPpbLlXAK/hAIE0gWQMac8nDQmZPnjFrJWY98oKtsF7OomT6SD5A7h2ofsfP7/7AExlLQ3cztV7qaww/r2XvaLGoBvrCbPTdLsla6GElZw0Xy0pDFkjZ1QxIu7/mrkid+RoLF5J1Q8YTx+6GoLB3NCRO/W0WUNtMuYFHKvbvt0XHxRT+gVRJvO89rJ0Pd1AiAGorLkkzBiSZcoBr23ZFWkQR9CqNpm0QAxQ4Tl1rqRcWO9oH76HNmvhgXw6RcITLQrvzZzS4C0u2HYbO0E5w18AxkZUZ8ufQrruH33TXqzPZ1gbZU6iHQAb5FYpnCNe60HRvjeHSb1SK2cuv7/CSTz3wnskmINXrEIpTn0OuSxPW/0mzCyUmuOAFdp5F0iMYCW4D8f7++tjQFybHQhkqj2Y7VSOiHcBkVtd4SDwTW2GzrgBwqDaIR/pr0AveaEbBeQON532cbgAbaU9l61K0zRBIdyGFq+kdR6sqPQjjl8h+7F0dbFVqy1VJrZxWF3PAIjNW1BXY4+bhdOTcr7XwFpmY7t8AeJR2F1HtFBZuW5rO4xtL6GH/h4dHySZ1WYlmB2ke3gZEg72n54HHT4d5H9217p2T+PaH+QDgwrmhO2l/5diq1LAw+3HH2nlJqyptukNbrReqG3zep0LFeRrSUJ3pSm0EhRtx67o61Q6g9/cz8HHJA+Z3lzdB0LevLn/UbgbdEBw+6ncAf7J6SLq1gmtlKeKuUsYPn/JS1yeFE4o3/ZBKunjjFa6Vv5LMB+2dqZfEIquuMNIPX4aMsgx0tXvUIbN3yp0plY4hBvSvoCQ0ar24aOwA4afHqUDy1mGw6UthFJ0ms9Xy+yp3W2dl5++AfYk1ug= -->
+<h1>Hacking the Buffalo WZR-HP-G300NH router (2014)</h1>

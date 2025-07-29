@@ -1,0 +1,136 @@
+---
+layout: default
+title: "Arduino Solar Water Heater Sensor"
+parent: Electronic Hacks & Reverse Engineering
+nav_order: 301
+date: 2021
+---
+
+<!-- page=Arduino Solar Water Heater Sensor -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1620592239 -->
+<!-- ip=181.31.249.235 -->
+<!-- content-type=text/html -->
+<!-- name=cat -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<h1>Arduino Solar Water Heater Sensor (2021)</h1>
+<p>The&nbsp;GHBO1/SHBO1 is a temperature and level sensor for solar water heaters. It is manufactured by&nbsp;Sunhome Technology Co.,Ltd &amp;&nbsp;Green Homebuilders Inc. The manufacturer does not provide information on how to use it. They only sell it as a replacement part for solar water heater controllers like the&nbsp;<a href="http://www.chinasunpark.com/DIYtrade/SR500-EN-201000929.pdf">SR500</a>.&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Exploring the sensor</h1>
+<p>First I opened the case and noticed a couple of things</p>
+<p><img id="pbImage642867" style="width:399px;height:299px;display:block;margin-left:auto;margin-right:auto;" src="{{ site.baseurl }}/assets/images/Sensor de nivel para termotanque 01.jpg" alt="" width="935" /></p>
+<ul><li>It has a microcontroler so it was most likely using some sort of comm protocol</li>
+<li>It has voltage regulator and the red wire is labeled 12V (i.e. the black &amp; red wires are power). Using a bench power supply I tested that it can work with 5V as well (not with 3.3V)</li>
+<li>On the left there are 7 wires going in. Two are labeled T1 and the other five L0 to L4. This led me to think that the level sensor was discrete (5 steps) and there was a single temp sensor</li>
+<li>I also noted the ICs labels 62AJ64M HC04 and the model on the PCB&nbsp;SR1061B3 but none yielded any results</li>
+</ul><p>&nbsp;</p>
+<h1>Analyzing the comm protocol&nbsp;</h1>
+<p>I first measured with a multimeter the white wire to check if the output was TTL. I found out that the output voltage matches the supply voltage (i.e. if VCC=5V then it behaves like TTL, but if VCC=12 volts then the data voltage is 12V).&nbsp;<span style="font-size:13px;line-height:1.5em;">I then hooked the sensor to a logic analyzer I made using an Arduino mega (</span><a style="font-size:13px;line-height:1.5em;" href="https://github.com/gillham/logic_analyzer">https://github.com/gillham/logic_analyzer</a><span style="font-size:13px;line-height:1.5em;">) and an open source logic sniffer (</span><a style="font-size:13px;line-height:1.5em;" href="http://www.lxtreme.nl/ols/">http://www.lxtreme.nl/ols/</a><span style="line-height:1.5em;">). After fiddling with different sample rates I realized that the sensor was sending 70ms packets every 1 seconds (940ms). Each packet looks like&nbsp;this (shown at 50Khz sampling)</span><span style="line-height:1.5em;margin-left:auto;margin-right:auto;"><img id="pbImage538430" style="width:505px;height:362px;display:block;margin-left:auto;margin-right:auto;" src="{{ site.baseurl }}/assets/images/25c - 4-4.png" alt="" width="935" /></span><span style="line-height:1.5em;"> I realized that it looked a lot like a the packets used on IR controls. In fact I used&nbsp;</span><a style="font-size:13px;line-height:1.5em;" href="https://github.com/cyborg5/IRLib">https://github.com/cyborg5/IRLib</a><span style="line-height:1.5em;">&nbsp;to decode it and manage to do it with these parameters&nbsp;</span><em style="font-size:13px;line-height:1.5em;">decodeGeneric(0,3800,0,1400,400,575,0).</em><span style="line-height:1.5em;">&nbsp;More generally what I found is that the protocol has a header bit followed by 40 bits encoded with&nbsp;</span>varying. This is the exact timing in usec</p>
+<ul><li><span style="font-size:13px;line-height:1.5em;">MARK_HEADER 7000</span></li>
+<li><span style="font-size:13px;line-height:1.5em;">SPACE_HEADER 3000</span></li>
+<li><span style="font-size:13px;line-height:1.5em;">MARK 500</span></li>
+<li><span style="font-size:13px;line-height:1.5em;">SPACE_ONE 1500</span></li>
+<li><span style="font-size:13px;line-height:1.5em;">SPACE_ZERO 600</span></li>
+</ul><p>&nbsp;</p>
+<p>Finally I put together a simple arduino sketch (see at the bottom of this page) to read the package and try to make sense of them. A typical packet looks like&nbsp;AA1A0328BB. After experimenting with bottles filled with water at different levels &amp; temperatures I found this</p>
+<ul><li>AA --&gt; Constant. It never changed on my experiments</li>
+<li><strong>1A&nbsp;--&gt; Temperature in Celsius. In this case 26c</strong></li>
+<ul><li>It seems that the temperature sensor is located towards the top of the stick<strong>&nbsp;</strong></li>
+</ul><li><strong>03&nbsp;--&gt; Water level as a discrete value from 0 to 4</strong></li>
+<ul><li>Level 0 spans from empty to a fifth of the stick</li>
+</ul><li>28&nbsp;--&gt; Constant. It never changed on my experiments</li>
+<li>BB&nbsp;--&gt; Some sort of checksum that I did not bother to decode</li>
+</ul><p>&nbsp;</p>
+<h1>Wemos D1 mini code for reading the sensor</h1>
+<p>Check&nbsp;hdelaroza's code to <a href="/w/page/144207993/Wemos%20D1%20mini%20Solar%20Water%20Heater%20Sensor">integrate the sensor via MQTT with Home Assistant</a></p>
+<p>&nbsp;</p>
+<h1>Arduino routine for reading the sensor</h1>
+<p>&nbsp;</p>
+<table style="width:100%;" border="0"><tbody><tr><td>&nbsp;&nbsp;</td>
+<td>
+<p>// Extracted from <a href="/Arduino%20Solar%20Water%20Heater%20Sensor">http://hack4life.pbworks.com/Arduino%20Solar%20Water%20Heater%20Sensor</a></p>
+<p>const int inPin = 22;&nbsp;</p>
+<p>&nbsp;</p>
+<p>void setup() {</p>
+<p>&nbsp; pinMode(inPin, INPUT);</p>
+<p>&nbsp; Serial.begin(9600);</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>#define TIMEOUT 50000</p>
+<p>#define MARK_HEADER 7000</p>
+<p>#define SPACE_HEADER 3000</p>
+<p>#define MARK 500</p>
+<p>#define SPACE_ONE 1500</p>
+<p>#define SPACE_ZERO 600</p>
+<p>&nbsp;</p>
+<p>int expectPulse(int val){</p>
+<p>&nbsp; unsigned long t=micros();</p>
+<p>&nbsp; while(digitalRead(inPin)==val){</p>
+<p>&nbsp; &nbsp; if( (micros()-t)&gt;TIMEOUT ) return 0;</p>
+<p>&nbsp; }</p>
+<p>&nbsp; return micros()-t;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>// temp in celsious and level goes from 0 to 3</p>
+<p>bool readTempNLevelSensor(char inPin, char &amp;temp, char &amp;level){</p>
+<p>&nbsp; &nbsp;byte data[5]={0,0,0,0,0};</p>
+<p>&nbsp; &nbsp;unsigned long val1;</p>
+<p>&nbsp; &nbsp;unsigned long st=micros();</p>
+<p>&nbsp; &nbsp;val1 = expectPulse(HIGH);</p>
+<p>&nbsp; &nbsp;if(val1&gt;MARK_HEADER){</p>
+<p>&nbsp; &nbsp; &nbsp;val1 = expectPulse(LOW);</p>
+<p>&nbsp; &nbsp; &nbsp;if(val1&gt;SPACE_HEADER){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;int c=39;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;for(;c&gt;-1;c--){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;val1 = expectPulse(HIGH);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(val1&lt;MARK){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; val1 = expectPulse(LOW);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(val1==0){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Serial.println("Mark error 0");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(val1&lt;SPACE_ZERO){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //0</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //data[c&gt;&gt;3]|=(1&lt;&lt;(c &amp; B111));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }else if(val1&lt;SPACE_ONE){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data[c&gt;&gt;3]|=(1&lt;&lt;(c &amp; B111));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }else{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Serial.print(val1);Serial.println(" Space error");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}else{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Serial.println("Mark error");</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;} &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;// Each reading should not take more than 70ms (use time to detect errors)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;if(micros()-st&lt;70000){</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;temp=data[3];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;level=data[2];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Serial.print(data[3]);Serial.print(" ");Serial.println((data[2]));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Serial.print(data[4],HEX);Serial.print(" ");Serial.print(data[3],HEX);Serial.print(" ");Serial.print(data[2],HEX);Serial.print(" ");Serial.print(data[1],HEX);Serial.print(" ");Serial.println(data[0],HEX);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp;} &nbsp;</p>
+<p>&nbsp; &nbsp;return false;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>void loop() {</p>
+<p>&nbsp; char temp,level;</p>
+<p>&nbsp; if(readTempNLevelSensor(inPin, temp, level)){</p>
+<p>&nbsp; &nbsp; Serial.print(temp,DEC);Serial.print("c ");Serial.println(level,DEC);</p>
+<p>&nbsp; }</p>
+<p>}</p>
+</td>
+<td>&nbsp;<br /></td>
+</tr></tbody></table><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:13px;line-height:1.5;">&nbsp;</span></p>
+<!-- pbraw=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 -->

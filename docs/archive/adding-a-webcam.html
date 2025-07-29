@@ -1,0 +1,68 @@
+---
+layout: default
+title: "Adding a webcam"
+parent: Archive
+nav_order: 101
+date: 2009
+---
+
+<!-- page=Adding a webcam -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1260746161 -->
+<!-- ip=190.231.186.38 -->
+<!-- content-type=text/html -->
+<!-- name=lifehacker -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<h1>Procedure</h1>
+<ul>
+<li>First you need to be able to make your own kernel modules
+<ul>
+<li>Get Kamikaze 7.09 <a href="http://downloads.openwrt.org/kamikaze/7.09/kamikaze_7.09.tar.bz2">source code</a></li>
+<li>Do make menuconfig and then make to check that you have all the needed dependencies (<a href="http://www.gargoyle-router.com/wiki/doku.php?id=openwrt_coding#part_iiibuilding_and_using_the_kamikaze_sdk_--_12_9_2007" target="_blank">more info here</a>
+<ul>
+<li>Other usefull targets for make are:
+<ul>
+<li>download:&nbsp; download all source tarballs (from the selected packages and it's dependencies) at once before starting the build</li>
+<li>prereq: checks if you have all prerequisites installed on the host-system for building the selected packages</li>
+<li>world: build everything</li>
+<li>tools/install toolchain/install: only build the tools and the toolchain</li>
+<li>clean: cleans the packages (NOT the tools and toolchain)</li>
+<li>distclean: cleans up everything expect $(TOPDIR)/.config and $(TOPDIR)/dl/</li>
+<li>package/&lt;package_name&gt;-{clean,compile}: rebuild a single package</li>
+<li>package/index: updates $(TOPDIR)/bin/packages/Packages</li>
+<li>V=99: turns on debugging</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Build the spca5xx_le driver following <a target="_blank" href="https://forum.openwrt.org/viewtopic.php?pid=61843#p61843">these instructions</a>
+<ul>
+<li>Make sure you do make kernel_menuconfig to select the driver as a module</li>
+</ul>
+</li>
+<li>Install video 4 linux (i.e. ipkg install kmod-videodev)</li>
+<li>Install w3cam (i.e. ipkg-opt install w3cam)
+<ul>
+<li>Check if the camera is working with vidcat (part of w3cam or <a href="http://www.macsat.com/macsat/content/view/36/30/">spcacat</a></li>
+</ul>
+</li>
+</ul>
+<h1><span style="color: rgb(255, 0, 0);">Results</span></h1>
+<ul>
+<li><span style="color: rgb(255, 0, 0);">Unfortunatelly the method described above did not work either with</span>
+<ul>
+<li>Micro Inovations IC50C: The LE&nbsp;driver <a href="http://mxhaard.free.fr/spca5xx.html">does not recognizes it</a>
+<ul>
+<li>The non lite version <a href="http://www.macsat.com/macsat/component/option,com_docman/task,doc_details/gid,10/Itemid,63/">found here</a> does not support the camera either</li>
+</ul>
+</li>
+<li>Logitech Notebooks Deluxe Zc0302 + Hdcs2020: There seems to be a problem with the color depth, the only one supported is format 21 and vidcat cannot provide it. In the case of spcacat the software gets stuck waiting for the image to come</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+
+<!-- pbraw=eJyNVltv2zYUfvevINyhS7BYku3EsRXHuzTrFqxri6Lbw14EijySCFOkRlK202H/fYeUfMkFQwFDpiTyXL7zne+ooSWkP3IuVEko2ULOaD1oBU+LObsas4IlMJnwxZwuGIfZ+Go2huR6Xsznk+n15YIVk4ETNaTjySy5vpyNZ+OBaNLxIokm03E0ns+i6XzAtHKg3Mg9NJA62Lm4crUcKIoHpSigomwNZgA1FTJt8q1Yix9q6gS1rAXFaMR0HVEz8KdGG2FKoVKlB6PRiNxRR8lbLaXeWoIPBstqvPpoNAPeGljGeDdYthIvUqzeCmMdedAtUQCcOE1yIDSX4Jc1XYN/Z4jeKoLxKJCk1ryVYI8mfgFHfqO1WNMvQK6jZEGWlFQGitth5VyTxjHH41JTbiPdgNoaF2lTxuv+TOzPHO4yfxc5aqL8y2S4suidAWGaY+R0tYzRYfB614dXg2oRzEJgrRQmUIHqXmD8rAK2xke0y7CiG8xNSr8ppIsJc8CIOCIqwJKzp4Fvt9uopKbUDxJGRrcOjAc+9uXArNZt1FTN94Lf9nllGCey5lVDcS2EyFsh/YMMQ8ta61foOzvkavk6G42y8SRbZJMkuR4STLwEdzvMcknVeriqtQEiVKFJBSZAcAT+A9oypLVQtD6pcNKSQpsOAGogPW7e1yB9rXLb3JD9fQCkRxlN5HiLQBRG1wEmCxKYQ6AaJCT2hQ0oC/etfQTdOUGMtUIbORQ+ZIu2nG8gbyTAcCxdYzCVv9OuPJaI4nF1utetsMKhO6HQlJQYgVbBWKWtG9kH66AOue4xfjnco9etNpKn3XYCGzAPrsJjxw1Oa2nj3h/xd6yiQu2fpBiAfOjPe19h/550x/1Hg0wCVZim/7Nh0wHEs/cfPj81sjdwfrTAhXWPrbTNSewEdg2mS745+/zh4939p/M4OmmF41Mu4xP0uxji19Ld9OvMy87r0t2M/gluLpDjjZDwb0oMdAlT4tkrDyk8tyeQC7sUA+TU1+3oPUcM94nHH5/V5c/bxSIlrjWYHZaYo8OyPBYmDgT+/zVefjqUxTaMXu12GcbKjUCskCVeCz1e2N9PGuyk3y02PBKqrR+p1EbA1ulGsNDqDfb6bDy/nL5qwt9whS4tBJaaljmhlX3cpL/7VrQovIHkvFetTkuzE/FCuerIG5LoI6dIjV5wX077vmfrRnDQ5JJIododORMRREQ063LfPmSNVkZhF4fN+XMD2ykOuZODI924w+Hw8vyY05ugq9i3PlR8BYYSYQl22NqjvBWu8hEx1IQzL4VEF70D7NeXNLamzFIXpLVbxv18DPDH01k8TWIcBlhaNHoyCJ4zAqfb0jZUoQKhaN8OmZbaII/L/GxydXVBEvyd3wxXn8C20mGx/ObVk6n4VRb+QFU2rlVId4nC4LGowVXaDxXLjMhRhmiuUdW44ERpFwAiIIJse5B65ydkEcxocq/0hgYqkfs3V8mblHxG2+9+7pS7p8ZTGOtdRanhUWEA8BL3bRD5D4Qhqj+2pA/BANOlEl+8srrHTPVOFHagRN0l6MJiBF9drbrRytcLaYPHvIBkXLOaqthRu77AdcbB4ceMjUvBL8ZJfI8CjqvZFAtb6BYFaz/hyCFa2zYNYnzKsw6+l7vhnS4xdlaR99pBrjUOlzuQ7Q7IXyyZJhPyHfmVMztJJknA1M8pgNruP3tw9Gj89Kk7BgenvvZ+0rnqIjwIMwBT3YeGNRZh5uLHGZmMg/D21GdU+RzQpu87hDvCyvapoGRgT/R87mRLF26LI5uEIW5dix22pSLMUD/m/B5Ro3SGDxtdvyQI3bpZdURZxs1q8B/UubLJ -->
+<h1>Adding a webcam (2009)</h1>

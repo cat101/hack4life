@@ -1,0 +1,64 @@
+---
+layout: default
+title: "Original OpenWrt installation"
+parent: Archive
+nav_order: 108
+date: 2014
+---
+
+<!-- page=Original OpenWrt installation -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- name=cat -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<!-- time=1413168825 -->
+<!-- ip=181.31.244.184 -->
+<!-- content-type=text/html -->
+<p>Sources</p>
+<ul><li><a href="http://www.buffalotech.com/support/downloads/airstation-nfiniti-wireless-n-high-power-router-access-point-wzr-hp-g300nh/">Buffalo downloads</a></li>
+<li>DD WRT</li>
+<ul><li><a href="http://www.dd-wrt.com/wiki/index.php/Buffalo_WZR-HP-G300NH">DD WRT page</a> about the router </li>
+<li><a href="http://g300nh.blogspot.com/">Blog</a> about installing diferent apps</li>
+</ul><li>OpenWRT page about the <a href="http://wiki.openwrt.org/toh/buffalo/wzr-hp-g300h">G300NH</a> </li>
+</ul><p>&nbsp;</p>
+<p>Flashing&nbsp; OpenWRT</p>
+<ul><li>I went first to DD WRT and then logged into the router to update the FW from within</li>
+<li><a>Guide 1</a> </li>
+</ul><p>Rule keep essentials on flash and optionals on /opt/ (the router has to work without USB stick)</p>
+<p>&nbsp;</p>
+<ul><li>Setup shared SSH keys for easy login</li>
+<li>Setup PPPOE to conect to internet</li>
+<li>Set router name</li>
+<li>Set dnsmaq domain to my mine</li>
+<li>Configure dnsmasq &amp; DHCP</li>
+<ul><li>Add hosts using ethers &amp; hosts so that local name resolution works</li>
+<li>Set domain </li>
+</ul><li>Installed</li>
+<ul><li>nano </li>
+<li>luci-app-ddns (instead of updatedd &amp; updatedd-mod-zoneedit) </li>
+<li>luci-app-upnp </li>
+</ul><li>Open port for linksys camera </li>
+<li>Wol page</li>
+<li>Point logging to NAS port 514 (keep only 16kb in mem)&nbsp;</li>
+<li>Todo</li>
+<ul><li>integrity monitoring</li>
+<li>Fail2ban</li>
+<li>functioning email</li>
+<li>Firewall rules </li>
+<ul><li># Disable ICMP echo reply, so nobody can ping the gateway from the Internet<br />iptables -A input_wan -p icmp --icmp-type 8 -j DROP<br /><br /># Disable traceroute response<br />iptables -t nat -A prerouting_wan -p icmp --icmp-type 11 -j DROP<br />iptables -A input_wan -p udp --dport 33434:33454 -j DROP </li>
+</ul></ul><li>X compiling apps for Backfire 10.03.1 rc4</li>
+<ul><li>Do svn checkout -r24045 svn://svn.openwrt.org/openwrt/branches/backfire . and update <a href="https://forum.openwrt.org/viewtopic.php?pid=126058">feeds.conf</a>&nbsp; </li>
+<li>apt-get install build-essential asciidoc autoconf binutils bison   bzip2 flex gawk gettext libncurses5-dev libz-dev patch unzip zlib1g-dev<br />./scripts/feeds update -a<br />./scripts/feeds install -a<br />make <br />svn co svn://svn.openwrt.org/openwrt/tags/backfire_10.03 </li>
+<li>make menuconfig</li>
+<ul><li>Set Target System to Atheros AR71xx</li>
+<li>Set Target Profile to Buffalo WZR-HP-G300NH</li>
+<li>Set Build the OpenWrt SDK </li>
+</ul><li>Follow this <a href="http://manoftoday.wordpress.com/2007/10/11/writing-and-compiling-a-simple-program-for-openwrt/">tutorial</a></li>
+</ul><li>Getting nuts</li>
+<ul><li>opkg files kmod-usb-serial-pl2303</li>
+<li>Help on making the nut package</li>
+<ul><li><a href="http://wiki.openwrt.org/doc/devel/packages">Compiling</a></li>
+<ul><li>make package/nut/compile V=99<br />make package/nut/install V=99<br />scp bin/ar71xx/packages/nut_2.6.0-1_ar71xx.ipk root@192.168.1.1:/tmp <br />opkg install /tmp/nut_2.6.0-1_ar71xx.ipk</li>
+</ul><li><a href="http://wiki.openwrt.org/doc/devel/patches">Making patches</a> </li>
+</ul></ul></ul>
+<!-- pbraw=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 -->
+<h1>Original OpenWrt installation (2014)</h1>

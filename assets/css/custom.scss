@@ -1,0 +1,62 @@
+---
+---
+
+/* Custom styles to improve full-screen layout and sidebar positioning */
+
+/* Remove max-width constraints */
+.site-header,
+.site-nav,
+.main {
+  max-width: none !important;
+}
+
+/* Make the sidebar wider and properly positioned */
+.side-bar {
+  width: 300px !important;
+  min-width: 300px !important;
+}
+
+/* Adjust main content to account for sidebar */
+.main {
+  margin-left: 300px !important;
+  width: calc(100% - 300px) !important;
+}
+
+/* Make main content wrapper use full available space */
+.main-content-wrap {
+  max-width: none !important;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  width: 100% !important;
+}
+
+/* Ensure content takes full width within container */
+.main-content {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Better responsive behavior */
+@media (max-width: 50rem) {
+  .side-bar {
+    width: 100% !important;
+  }
+  
+  .main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* Improve navigation spacing */
+.nav-list .nav-list-item {
+  margin: 0.125rem 0;
+}
+
+/* Better content spacing on larger screens */
+@media (min-width: 66.5rem) {
+  .main-content-wrap {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}

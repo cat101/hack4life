@@ -1,3 +1,11 @@
+---
+layout: default
+title: "DVR Q-See QT428 Root Access"
+parent: Electronic Hacks & Reverse Engineering
+nav_order: 6
+description: "Hardware hack to obtain root access on a Q-See QT428-418-5 CCTV DVR through UART serial console"
+---
+
 # Obtaining root on a Q-See-QT428-418-5 CCTV DVR
 I have had this DVR for several years with no problems. My only disappointment was the lack of web APIs to integrate it into other home automation projects. I had read that older versions of the FW (I have 3.2.0) had a telnet deamon enabled with some default password. I have also read recently that many DVRs have been exploited, but I did not want to go into a guessing game so I decided to do a hardware hack.
 

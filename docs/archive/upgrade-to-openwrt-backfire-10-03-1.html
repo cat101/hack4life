@@ -1,0 +1,67 @@
+---
+layout: default
+title: "Upgrade to OpenWRT Backfire 10 03 1"
+parent: Archive
+nav_order: 106
+date: 2012
+---
+
+<!-- page=Upgrade to OpenWRT Backfire 10 03 1 -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1353011007 -->
+<!-- ip=190.230.238.145 -->
+<!-- content-type=text/html -->
+<!-- name=cat -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<ul><li>Upgrade using LUCI and the sysupgrade image</li>
+<ul><li>openwrt-ar71xx-wzr-hp-g300nh-squashfs-sysupgrade</li>
+</ul><li>Settings &amp; conf files</li>
+<ul><li>Allow remote hosts to connect to local SSH forwarded ports</li>
+<li>ethers &amp; hosts </li>
+</ul><li>Copy from backup</li>
+<ul><li>cp -a mybin/* /;chown -R root.root /mybin</li>
+<li>cp -a www/* /www/</li>
+</ul><li>Install packages</li>
+<ul><li>nano </li>
+<li>luci-app-ddns (this installed scrips and required conf to be adapted) </li>
+<li>luci-app-upnp (this installed scrips and required conf to be adapted)</li>
+<li>luci-ssl&nbsp; (this gets the SSL for uHTTP and the key generation packages)</li>
+<li>/etc/init.d/miniupnpd enable </li>
+<li>opkg install sudo </li>
+</ul><li>NFS to NAS </li>
+<ul><li>mkdir /mnt/nas; mkdir /mnt/nas_flash/ </li>
+<li>copy /etc/init.d/mount_nfs and do /etc/init.d/mount_nfs enable </li>
+<ul><li>tried fstab, lUCI mounts and block-mount pkg but they are not ready for NFS mounts</li>
+</ul></ul><li>Getting nuts</li>
+<ul><li>opkg install kmod-usb-serial-pl2303</li>
+<li>opkg install /mybin/packages/nut_2.6.0-1_ar71xx.ipk </li>
+<li>copy&nbsp;/etc/init.d/nut and do /etc/init.d/nut enable </li>
+<li>cp [backup]etc/ups* /etc/ (i.e. conf files)</li>
+</ul><li>Install MyHouse</li>
+<ul><li>opkg install haserl</li>
+<li>Enable WOL </li>
+<ul><li>opkg install fping etherwake</li>
+<li>chown root.root /www/cgi-bin/iphone/WOL.sh</li>
+<li>chmod +s /www/cgi-bin/iphone/WOL.sh </li>
+</ul><li>Enable monitoring probes</li>
+<ul><li>opkg install perl perlbase-socket perlbase-essential perlbase-xsloader</li>
+<li>opkg install netcat curl</li>
+<li>chown root.root /www/cgi-bin/sensors/checkUpnpPortFwd.sh</li>
+<li>chmod +s /www/cgi-bin/sensors/checkUpnpPortFwd.sh </li>
+</ul><li>Enable UPS monitoring </li>
+<ul><li>crontab /mnt/nas/backups/backup_121114/etc/crontabs/root </li>
+<li>opkg install rsync </li>
+<li>Enable collectd </li>
+<ul><li>opkg install collectd-mod-rrdtool collectd-mod-exec rrdtool </li>
+<li>cp /mnt/nas/backups/backup_121114/etc/collectd.conf /etc/ </li>
+<li>opkg install --nodeps&nbsp; luci-app-statistics </li>
+<li>mkdir /www/images </li>
+<li>cp /mnt/nas/backups/backup_121114/usr/lib/lua/luci/statistics/rrdtool/<br />definitions.lua /usr/lib/lua/luci/statistics/rrdtool/definitions.lua</li>
+<li>Add to /usr/share/collectd/types.db</li>
+<ul><li>upsStatus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; upsBat:GAUGE:0:15, upsLoad:GAUGE:0:100, upsTension:GAUGE:0:300</li>
+</ul><li>cp /mnt/nas/backups/backup_121114/etc/init.d/collectd /etc/init.d/collectd<br /><br />&nbsp;</li>
+</ul><li> </li>
+</ul><li><br /><br /> &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; </li>
+</ul></ul>
+<!-- pbraw=eJytVl1v2zYUffevuE9F25X6sJPGcYNiadekBbI2qBP0YRgCiqQswhLJktQc79fvUpJtWYmDbNhDqJji/TjnnnspQxdidmsWlnIBXsM3I9SP7zfwgbJlLq2ANIFkAumolnyWT9lxynKWiPGYn07pKePibXr8NhXJyTSfTseTk6NTlo9HXlZilk6OJ0maJsnJSJpZeppE40n4m0bp0fGIaeWF8sSvjZh5ce/jwlflSFG0ZNSPREVlOTPZSi7lrxX1kjpWC8VoxHQVUTsKx8lf0i6kmik9IoTAb9RTuNBlqVcOcGN0Vpfvz0r5fgOwdlIt4Or24xegioMvBLi1q7u3skIyzmI8vzXUSMfKekLtSXp/T1Z/W1IYspgkiSqI+1lTV+SO7Hx01nFnPhfeY0QHL2hl3gFiziGXpXD7Uc5DxmBFpb2AQjvvQinwtBLMh39LzWgJ8/lnyLVdUcsFB6Ot3/jBRSAYuwnU+hgk81GbNeRWV5BhcWuznwMzQChU60yq+DXE71ihVwrId7Ba+ygsEDdvdyFbk9VqFQzCYxDwi3KeliUYDIfMDkArqjTsnJU1k4QaQzhXDl76QjqQrQME65iVxjVFs+JnjcLkLZtITiaAcmq84K8e81cbZf6rv4E758oXKnNIcOtvIUKlUETz+VWoDNSfb26ut9JaijUeUcKierXa0tDzGgvPYqmkj3hc4TPkykEompWih0Wb5WKTPLia62Fpv17MQ+Zfz+ewT3K15NJi4ZSPFXXvYP/3XV6igONeJBY0speVrpW/U3nLFUZ+/OV+yl1wbyXSmmPa2RsoQ9M1Bq2rDDW9JM0GBHhZ7QNpa6A4dBSqzQrK1w2rAV1r2Ye9wX7Z9hio2rth8/ZoW1aak9plxAkraUlMidNocoDjVunxpmIx+r4bR2+jhKR37SiIpFkOeGul0ecHzR6jLWw/qDE20x9tX/4ZjtbGvW6N4KWMRNSbHa8OtNnv68+6dg8GWA9WQRF8uYv5qU3ix7creMIqN4HeZr6s6FL0Um5GRG8+hBnAFpIE7qQptBIx+o5c0bfBOsAv7onDQ3F3WVYa2dM25GKszobjZC9lgzCbJUPExKHShN/9Fs7hzYMi2G3du1Lj+LYH9KCwENQDq/vsPQkfIzhtXcwKwZa32NbXOK4vVvwZZDxheoCa2+t5n57BYLd409Js2/Rxq7LN8y4dp2l61EitO+riBs8BLqxbKwYPRMTw2sXbij+lpM0ZEnrRWu61HmyKe8Fg82avOZ6TfucpanqlbZ4DIAhRmgvjunG+vSzwrZfOS+Z6lt3QDDVqPhHcv8qsdhZPZ3FZ0zjEiXcx4g5pfJah//dc5GFC4F3hIjwNzzIdGO0yO+c83AmNE1fgVN3yE4dvLhfxbL9UmPoc/dcdKf/vCuj9A/Wzy/Pby0+zZJYevwlbV9h1u70kaTZvsAEQz3Yfv7YGun+eHrpxu1XmY5st8+3aZjoINWy5vgF02B6Be5CH4RX2D6n86qg= -->
+<h1>Upgrade to OpenWRT Backfire 10 03 1 (2012)</h1>

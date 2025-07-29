@@ -1,0 +1,75 @@
+---
+layout: default
+title: "Recovering the code of a Philco Delphi stereo (factory default on VW Polo)"
+parent: Electronic Hacks & Reverse Engineering
+nav_order: 302
+date: 2009
+---
+
+<!-- page=Recovering the code of a Philco Delphi stereo (factory default on VW Polo) -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1244299927 -->
+<!-- ip=190.30.30.51 -->
+<!-- content-type=text/html -->
+<!-- name=lifehacker -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<h1>Recovering the code of a Philco Delphi stereo (factory default on VW Polo) (2009)</h1>
+<p>I had lost the code of my car stereo (SAM 2002 0 VWZ4Z3E9114784) which was factory installed on a Volkswagen Polo Classic 1.6</p>
+<p style="text-align: center;"><img src="{{ site.baseurl }}/assets/images/Extraccion del codigo del stereo polo 00.JPG" width="600" height="450"></p>
+<p style="text-align: left;">Reading a couple of forums I found out that the code calculators did not work for my model and that the only option was to open it and read the code from an EEPROM memory. In order to access this EEPROM you need to pop both the top and bottom cover and then remove the CD&nbsp;mechanism shown beneath</p>
+<p style="text-align: center;"><img src="{{ site.baseurl }}/assets/images/Extraccion del codigo del stereo polo 02_resize.jpeg"></p>
+<p style="text-align: center;">&nbsp;</p>
+<p style="text-align: center;"><img src="{{ site.baseurl }}/assets/images/Extraccion del codigo del stereo polo 03_resize.jpeg"></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: left;">The EEPROM is an 8 pin chip located on the bottom right of the picture. On its package it reads 9355093 (a code name for a 24C08 EEPROM) or 9355032 (in case of a 24C04).</p>
+<p>&nbsp;</p>
+<p style="text-align: left;">In order to solder and un-solder the chip I&nbsp;learned a couple of tricks from <a href="http://www.youtube.com/watch?v=3NN7UGWYmBY">here</a> and <a href="http://www.instructables.com/id/E4TZC90GESEXCFFFPD/">here</a>. The next step was to hook the eeprom to my PicKit 2 programmer following this wiring guideline</p>
+<p>&nbsp;</p>
+<p style="text-align: left;"><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Connections for 24LC devices</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---------------------------------------</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PICkit 2 Pin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 24LC Device Pin (DIP)</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2) Vdd !&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8 Vcc</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) GND&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4 Vss</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (5) PGC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6 SCL</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (6) AUX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5 SDA (requires a 1K pullup resistor)</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7 WP - disabled (GND)</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1, 2, 3 Ax pins</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Connect to Vdd or GND per</span></p>
+<p><span style="font-family: Courier New;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; datasheet and to set address</span></p>
+<p>&nbsp;</p>
+<p style="text-align: center;"><img src="{{ site.baseurl }}/assets/images/Extraccion del codigo del stereo polo 06_resize.jpeg"></p>
+<p>&nbsp;</p>
+<p style="text-align: left;">Using the programmer I was able to read the following content shown below in HEX (note that this is way less than 4K)</p>
+<p>&nbsp;</p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:100010004D4D4D4E53710065D0B0B1C43DBE2F9CC7</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:100020002442BE60EC2CC1C048484545<span style="background-color: rgb(255, 153, 0);">0845</span>F20C4E</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:1000300000AA3C4104003558303033353131394362</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:100040002020FFFFFFFFFFFFFFFFFFFFFFFFFFFF7E</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:10005000FFFFFF56575A345A334539313134373858</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:10006000343762100332000009000400004C19010B</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:100070000059610000BC888888888888888888231F</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:10008000888800000000002A0900000000000041EC</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:100090002B414A0B243B41414A222C05531D061794</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:1000A0002D58771D01010835581201000128000163</span></p>
+<p style="text-align: center;"><span style="font-family: Courier New;">:1000B0000409140F140F0A0A1407152055FFFFFF37</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: left;">The unlock code is located on the highlighted bytes (i.e. code 0845). Finally, in order to enter the code follow this procedure</p>
+<ol>
+<li>Switch On the Vehicle Ignition and turn the unit on.</li>
+<li>The Radio will display "SAFE" followed by "1000" after 5 seconds</li>
+<li>If the display continues to show "SAFE" and a number in the bottom left of the display,</li>
+<li>then the unit is Codelocked, and will require Decoding to reset.</li>
+<li>Press Preset "1" repeatedly until the first digit is correct</li>
+<li>Press Preset "2" repeatedly until the second digit is correct</li>
+<li>Press Preset "3" repeatedly until the third digit is correct</li>
+<li>Press Preset "4" repeatedly until the fourth digit is correct</li>
+<li>Press and hold the "&gt;&gt;" button to enter the code.
+<p>&nbsp;</p>
+</li>
+</ol>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<!-- pbraw=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 -->

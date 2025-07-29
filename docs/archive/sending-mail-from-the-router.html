@@ -1,0 +1,100 @@
+---
+layout: default
+title: "Sending mail from the router"
+parent: Archive
+nav_order: 103
+date: 2009
+---
+
+<!-- page=Sending mail from the router -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1261947392 -->
+<!-- ip=190.230.45.75 -->
+<!-- content-type=text/html -->
+<!-- name=lifehacker -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<p>On this section I describe how to add email capability to the box. Note that my goal is for internal apps and daemon to be able to mail me when something happens using Gmail as the mail server. I'm trying to set up a general email server that can be used by other computers on the LAN.</p>
+<p>&nbsp;</p>
+<p>Steps</p>
+<ul>
+<li>ipkg-opt install msmtprc (manual <a target="_blank" href="http://msmtp.sourceforge.net/doc/msmtp.html">here</a>)</li>
+<li>Create /etc/msmtprc&nbsp;</li>
+</ul>
+<table cellspacing="1" cellpadding="1" align="center" style="margin: 0px auto; width: 330px; height: 262px;" class="pbNotSortable">
+<tbody>
+<tr>
+<td bgcolor="#FFFFCC" style="background-color: rgb(255, 255, 204);">
+<pre style="text-align: left;">
+account default
+</pre>
+<pre style="margin-left: 80px; text-align: left;">
+ 
+</pre>
+<pre style="text-align: left;">
+host smtp.gmail.com
+</pre>
+<pre style="text-align: left;">
+port 587
+</pre>
+<pre style="text-align: left;">
+auth on
+</pre>
+<pre style="text-align: left;">
+user UUU@gmail.com
+</pre>
+<pre style="text-align: left;">
+password PPP
+</pre>
+<pre style="text-align: left;">
+auto_from on
+</pre>
+<pre style="text-align: left;">
+from UUU@gmail.com
+</pre>
+<pre style="text-align: left;">
+ 
+</pre>
+<pre style="text-align: left;">
+tls on
+</pre>
+<pre style="text-align: left;">
+tls_starttls on
+</pre>
+<pre style="text-align: left;">
+tls_certcheck off
+</pre>
+<pre style="text-align: left;">
+ 
+</pre>
+<pre style="text-align: left;">
+logfile
+</pre>
+<pre style="text-align: left;">
+syslog LOG_MAIL
+</pre></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Create /bin/sendmail and chmod +x</li>
+<li style="list-style-type: none; list-style-image: none; list-style-position: outside; display: inline;">
+<table cellspacing="1" cellpadding="1" align="center" style="margin: 0px auto; width: 330px;" class="pbNotSortable">
+<tbody>
+<tr>
+<td bgcolor="#FFFFCC" style="background-color: rgb(255, 255, 204);"><span style="font-family: monospace;">#!/bin/sh<br>
+<br>
+/opt/bin/msmtp --file=/etc/msmtprc&nbsp; "$@"</span></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>Test echo 'Hello, World!' | sendmail UUU@gmail.com</li>
+</ul>
+<p>&nbsp;</p>
+<pre style="margin-left: 80px;">
+ 
+</pre>
+<p>&nbsp;</p>
+
+<!-- pbraw=eJy9VVtv2zYUfvevOFWHpcUqy5c4tmU7SJGibYC0DZAFewwo6kgiTJEESdUxsB+/QzoOkjXYnGGbH2ge6ly+czesxvwaVSlUDS0TEiqrW/ANgtWdR9vrRJlXMz4Z8ooPcDQq5zM25yWeDCcnQxxMZ9VsNhpPj+e8GvW8aDEfjk6G8+PpeD7qCZMP54P+aDzoH0/600mPa+VR+dRvDeYe73zW+Fb2FCM5KSpsGF+TUQxQclNsxFqctcwL5niHirM+122f2V6QSr8LWwuVK91L0xQ+MM/go5ZSbxzQQ29pTr8pckU4cMi90AouoETHrSgQGr0Br4GVJURrwJlhhZDCb8N7iECh7/rwVXskinlot1BrJoH0VdqCIE+sIpoZ44CpEkqGLRkhadLPConhGnW3CJsGFTjdIgGiWDckhcpB5wL1KXIxF83Gu0P7HW0fLo4oG3YbmEiZQw+dAQY1KrRkGx8x71BypoL5zmEJxRY0abRAUTMhmw4CPrJx+f5rf5mZ0xCkn1XhzGJPXXs0bkd0kg4pToVZ16k2nlx2nklyx7XeWA5vWqY6QrFk4Jmt0a+S20IytU6gsVitksZ7k2dZ5O873VmOFLoa+wp9Vmp+/yVkMzkloLjM2OnbZUZGo+Vzi4zCn6G/Z7V8jzayZBGij7HmKKUzjFOoVskwibSh9O5pJkWtVgnHkLcEnN9KXCUtizUEA3MHrPN6ARtR+iaH8ZieFtCgqBufw+hkRCRplcy5VWIKqotrbaPpJGAodLkN/zYcFPqaa6ntKnn9kX7n5w8GC6rwmnpLlWnkyMHWxZvRZPIOdsfg+O0iaDQW9zKhUdKIPweJlQ/fGeekxFNBV6yTnmJBAk/Fdr6lQSKHWXTnOU3wnOxzjI12HmLC6lB2oRcPFTUUKpjMpofyUyoaqtVD2anaLdzc3Jy9HBilc6NtCVdXVy8Ap2/jnDwcYWT/RwgPTo+X7gWAiPuWutn6l4txtJ43yNegq+pfd0PquhISD2V3W0cScPnt0+2X9xeX92LLzJdhPsR2zPbNmcV2fTTZ9vOlECpztAV3Y5hGOW9aXcIvdw+jaA9BCufTeN/tMFBa4QIePYs27NQf3412IiyhHGixOlHS11I4I9k2p8EqBbEn/+0w+/+m15Kwq71MRTs/rVgrJHlKC1IHx4Kzr1/tAt8si2A3HBmtmfgYpz2t8VAKqx/nPyQ/nSXLLJj5u1w/LJNfkcYX8kbD0WcKp34Hv2kry1dH8Ds8JP9Jiz7ZMn9alH81Zp+W+2O5PwDo6iMF -->
+<h1>Sending mail from the router (2009)</h1>

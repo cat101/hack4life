@@ -1,0 +1,62 @@
+---
+layout: default
+title: "Adding integrity monitoring"
+parent: Archive
+nav_order: 102
+date: 2009
+---
+
+<!-- page=Adding integrity monitoring -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1261950951 -->
+<!-- ip=190.230.45.75 -->
+<!-- content-type=text/html -->
+<!-- name=lifehacker -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<p>Steps</p>
+<ul>
+<li><a href="http://osiris.shmoo.com/linksys.html" target="_blank">Install a scan agent on the router</a>
+<ul>
+<li>Created this custom configuration "default.wl700ge"</li>
+<li style="list-style-type: none; list-style-image: none; list-style-position: outside; display: inline;">
+<table cellspacing="1" cellpadding="1" align="center" class="pbNotSortable" style="margin: 0px auto;">
+<tbody>
+<tr>
+<td bgcolor="#FFFFCC" style="background-color: rgb(255, 255, 204);"><span style="font-family: monospace;"># Default Configuration for the Asus wl700ge router.<br>
+Recursive no<br>
+Hash md5<br>
+FollowLinks no<br>
+IncludeAll<br>
+&lt;System&gt;<br>
+Include mod_users<br>
+Include mod_groups<br>
+&lt;/System&gt;<br>
+&lt;Directory /&gt;<br>
+Recursive yes<br>
+NoEntry dev<br>
+NoEntry proc<br>
+NoEntry tmp<br>
+NoEntry var<br>
+NoEntry hdd<br>
+NoEntry lost+found<br>
+NoEntry opt/var<br>
+IncludeAll<br>
+&lt;/Directory&gt;</span></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Install a management console on a <a href="http://osiris.shmoo.com/data/osiris-4.2.3-win32.exe" target="_blank">windows computer</a></li>
+<li>Install the Osiris CLI on the same windows machine
+<ul>
+<li>osiris.exe</li>
+</ul>
+</li>
+</ul>
+
+<!-- pbraw=eJyFVNtu4zYQfddXEFpg0aLVxU6U2IpsNHC6aIDFLtB8wIIiRxIRiiRIKon+vkM6cuJNi+qB4gw593NoaA/1LedC9UQoD70VfiajVsJri8pkErzuNqxasY6VsF7z7YZuGYerVXW1gvJ6020264vryy3r1okXI9Sr9dVqW5XbapUIU6+2Zb6+KPPLKr+uEqYxhvKZnw3UHl58MfhRJoqinRQdDJQ9gk1gpELWpn0Wj+KPkXpBHZtAMZozPebUJsEqexK2F6pWOsmyjNxRT8kXLaV+dgQVSWP2Dx6MawqzT5pJ4iLFvqFksNDt0sF7UxeFdsIKl7th1Dp4L6RQj252eQiREk9tD36X/mglVY/p/l45T6UklDhGFcHuKU+0In4AYvXkwTYFfRfuYIF64HguHGGT83ok2IRO9JPFutAy5dDRSfr8WV6XZQ9pgylEY+L8LGGXSuF8FvfHvhGlFdyQd2oxhjF+1BusLgSpCabmBMdTLpyRdK5x2lgp3KQYytNWAmEgpTOU4dR36SqNsqERGlGmUvRqlzKsGCweS+rcLjXtN+0ftI0+0iXlkcbRkNK8EDp5fQzTaj6Hvw0LJ23PtNR2l376gt/hcLJuEQU9dlPxLN6oie3bX9ZV9Ts5LuXlr+ixwWzVYtMhsrKOjkJibYhfHUoJ5X0id8cGk8NZ3ztt49Ru3eTIa+9fR5g3Lab4N7DJOvEE2Neo+Iu6gYy8isIRaV8DWJbze8XkxOFWyih+lv7mYXYexs+9v3l/A/PjPyYH1n3QhrKNO9kXPzkIujthgSE7Z1Kc9G+5znC0/qb/VB7vcHg6k43V7EzhR3MmP1F7Jg+cn8lSO/9bF4ZzptbGF4vpvzSiOGUdcy7C6PZN4TlCoYiAKBZ4FBFKYRN5UEQqvd8v3Hrj4kgVEmAMXERyOY1oxglT8r9k5/hovGqzy3ydX2TPQl2sc3iBj9zHIx4eFzQ0C9NPZD1lEzD1PXokh6/3y9vg8IUji4ORsgG591bJa14Y9b+K/gc5/+n6 -->
+<h1>Adding integrity monitoring (2009)</h1>

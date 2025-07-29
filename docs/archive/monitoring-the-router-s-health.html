@@ -1,0 +1,77 @@
+---
+layout: default
+title: "Monitoring the router's health"
+parent: Archive
+nav_order: 104
+date: 2009
+---
+
+<!-- page=Monitoring the router's health -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1244303044 -->
+<!-- ip=190.30.30.51 -->
+<!-- content-type=text/html -->
+<!-- name=lifehacker -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<h1>DRAFT WRITEUP</h1>
+<p>&nbsp;</p>
+<ol>
+<li>I monitor my house network using&nbsp;<a target="_blank" href="http://www.activexperts.com/ActivMonitor/">ActiveXperts Network Monitor</a> v7.0.7.</li>
+<li>In particular I rely on SNMP to periodically query my router.</li>
+<li>I'm using snmpd version 5.1.2-2.3.</li>
+<li>To get started edit /etc/snmp/snmpd.conf
+<ol>
+<li>Restrict which machines can access it to the one that is running the SNMP monitor (in my case 192.168.1.8)
+<pre>
+com2sec  publicro  192.168.1.8    public
+com2sec  publicrw  192.168.1.8  private
+</pre></li>
+</ol>
+</li>
+<li>On the following sections you will be exposing information through snmpd by adding OIDs (Object Identifiers) on the configration file as follows
+<pre>
+exec hddtemperature /etc/snmp/hddtemperature
+exec hddselftest /etc/snmp/hddselftest
+exec checkupnpportfwd /etc/snmp/checkUpnpPortFwd.pl
+exec checkdnsredirection /etc/snmp/checkDNSRedirection.pl
+</pre></li>
+<li>
+<p>Note that the order of the lines defines the SNMP&nbsp;<span>OIDs</span>. On my router the first entry is 1.3.6.1.4.1.2021.8.1.101.1 and then the last digit increments sequentially</p>
+</li>
+</ol>
+<h2>Monitoring disk temperature</h2>
+<ol>
+<li>Install smartmontools version 5.38+cvs20090115-1</li>
+<li>Copy <a href="/f/hddtemperature">the <span>hddtemperature</span> script</a> to /etc/snmp/</li>
+<li>Register the script on /etc/snmp/snmpd.conf
+<pre>
+exec hddtemperature /etc/snmp/hddtemperature
+</pre></li>
+<li>
+<p>On your monitoring software query the appropriate SNMP OID to get the temperature. I&nbsp;&nbsp;have configured an alarm if it goes over 62 (i.e. celsius)</p>
+</li>
+</ol>
+<h2>Monitoring overall disk health (i.e. SMART&nbsp;treasholds)</h2>
+<ol>
+<li>Install smartmontools version 5.38+cvs20090115-1</li>
+<li>Copy <a target="" href="/f/hddselftest">the <span><span>hddselftest</span></span> script</a> to /etc/snmp/</li>
+<li>Register the script on /etc/snmp/snmpd.conf
+<pre>
+exec hddselftest /etc/snmp/<span>hddselftest</span>
+</pre></li>
+<li>
+<p>On your monitoring software query the appropriate SNMP OID to get the temperature. I&nbsp;&nbsp;have configured an alarm if the results is not PASSED</p>
+</li>
+</ol>
+<h2>Checking UPNP port forwarding</h2>
+<ol>
+<li>Need to write about this&nbsp;</li>
+</ol>
+<h2>Checking DNS registration</h2>
+<ol>
+<li>Need to write about this&nbsp;</li>
+</ol>
+<p>&nbsp;</p>
+
+<!-- pbraw=eJzNVlFv4kYQfudXjPLQu1OFjQ1JgHKo0eUi8RCCSKL2rVrWY7xlvevurnH49zdrm2DSnKpWVVUJDN7ZmZ2Z75vPLtgWp/daCaeNUFtwGYLRpUPzwUKGTLqsV4pkmo75ZcRTPsA4TiZjNuEJXkWXVxEOrsfpeBwPr0cTnsY9J3KcRvFoNBwMB6NRTxTTaDIIhvXnMupxrRwq13eHAqcOX1yYuVz2FCM3KVLMGN+h6WHOhJwWm0rsxM85c4JZXqLiLOA6D5jpea/+XpitUFOle/1+H26ZY3CnpdSVBVrozbJofru+uXuCX9aLp6/Pq1lIK71ZMf9BbWzx0yws6E5LukgxX0De9AHyA2S6tAgKXaXNDkpLvWl9GDhmtug+X/y2kUztLiAzmH6+yJwrpmFYVVXAuBN7fCnQOOvzDW/8Qtvl8GJe3+KvtR2W7RmteRayOeyvg0FwHcxCSqvJTUHBjBO8lMzAAgzKA2gFj8v7FTgNFEroRHAmaf2PEs3BF9EA2Q3zIW9qAavyIoE9GisozGUQBXE/DoadvU8aqEqwVK3DBDARDkJ0PPSu9SWh2lR6auAarTOCO6gywTPIGc+EQgucKWCco7VAMShbTzKtkH6ZA2HBlEodyVdXdATio1C+Ds4Ii2gSB9HVmDIdfyIIDc6JS3lskQMU5UYKbjR0dwEcDX/aWL3ZWBixZw57RAiK2/YgrOt67ceDqvNLa37VLUSCUSsLB11CJaSEDQKhrusGC5Vq44mrvR8hsc3apm8OwJLE73lY3Fr4+LD5nSLBIqGxEKkgSD6Bbg7z/RVb00RJhURgts3Atj3AF6orSxKHOZGAudJgB6Zzw+tmizJ1hNb5zuNqs41nyHdloYpCG5dWSWdvbXom04pMd1USFLLjkyhriC2mac9bt9vl4/pk9Z5nTa8vxXypXUuPmismQQM6rW9kzakE0/r3SJl2OG3B1Ny3dRbWfwN4UKdJaAAUhgqnXtOMEPciIv0VsWDkR2AQEx3oTzSgLzCVeI8GCsnIKxFbYrBQ3GBOESxxgIaNYPNz16hJlztZPO9IayLsDjpokBjFXflRNGpEIpvTwNEAOK2l7UzocPwj39t4MJgMouiyH50a9kUXByBdanQoTN+gfjH3+TetObe0TQLLjShcrTw0nSfATkescSvssYPNdjjDtqsHf5+X71GAgKPBMkctqCdOp65iFKhROJ8LKwqjaXxpehvpIPB9EV66vL1zSgCLhiXNNWP744CRMQEvUiSuOYjUy9RWE7s0tR+uYtKhgNw5SitK++mvgPZeHska8OYZ2kZ4vL9ZPzXHO4PMZlomPt6/TITjA+rijBLH8e7y4ZUVR2NLif+CGe+I0PfS+d8RpH5NQltK0gASEaUdrG4eH7/evsuNL174fH7Pq+UKvJ6SiBtK1D8F3qC/RDqK8quMoIzZhoSLThP2+Mbyncgkq5SQh6J5WvzzqGcvR98AtGZwEg== -->
+<h1>Monitoring the router's health (2009)</h1>

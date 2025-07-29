@@ -1,0 +1,42 @@
+---
+layout: default
+title: "Converting a RR501 X10 RF Transceiver to 220v"
+parent: Electronic Hacks & Reverse Engineering
+nav_order: 303
+date: 2011
+---
+
+<!-- page=Converting a RR501 X10 RF Transceiver to 220v -->
+<!-- uid=f8c51cfc0e22d98a9cde61561e078f8823749cf2 -->
+<!-- time=1303444486 -->
+<!-- ip=201.253.149.137 -->
+<!-- content-type=text/html -->
+<!-- name=cat -->
+<!-- email=pbwiki@matiascuenca.com.ar -->
+<h1>Converting a RR501 X10 RF Transceiver to 220v (2011)</h1>
+<p>Although there are several resources on the web (<a href="http://www.remote.org/frederik/projects/x10/rr/">1</a>, <a href="http://www.redoak.co.uk/hpxrr501.html">2</a>, <a href="http://www.hansotten.com/attersjo/rr501.html">3</a>, <a href="http://idobartana.com/hakb/modifying_remote_control_transce.htm#Modifying%20110v%20to%20220v">4</a>) on how to convert a RR501 transceiver from 110v to 220v I recently (mid 2010) bought a new one that had an updated circuit. As shown on the following pictures the board says 10432I on the case says 07J40.</p>
+<p>&nbsp;</p>
+<p><img id="pbImage330840" style="border:0pt none;" src="{{ site.baseurl }}/assets/images/RR501 10432I 01.jpg" alt="" width="300" height="399" /><img id="pbImage375520" style="border:0pt none;" src="{{ site.baseurl }}/assets/images/RR501 10432I 04.jpg" alt="" width="300" height="399" /><img id="pbImage270387" style="border:0pt none;" src="{{ site.baseurl }}/assets/images/RR501 10432I 02.jpg" alt="" width="300" height="400" /><img id="pbImage392955" style="border:0pt none;" src="{{ site.baseurl }}/assets/images/RR501 10432I 03.jpg" alt="" width="300" height="399" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Using <a href="http://idobartana.com/hakb/modifying_remote_control_transce.htm#Modifying%20110v%20to%20220v">Ido Bartana's guide</a> as a base and these general tutorials on 220v module modification (<a href="http://idobartana.com/hakb/general_principles_for_110v_to_2.htm">1</a>, <a href="http://www.redoak.co.uk/hpx10240v.html">2</a>) I ended with this set of steps</p>
+<ul><li>﻿Change the large blue, (C28) from 1uF/250V to 470nf/400V</li>
+<li>Change the smaller blue, (C29) located close to the output connector, from 0.22uF/250V to 0.1uF/400V</li>
+<li>Change the 130V MOV in parallel with the input to 250V RMS</li>
+<li>Change the 130V MOV in series with the relay to 250V RMS</li>
+<li>Add a 100 Ohm/1W resistor in series with the 110v cam relay coil</li>
+</ul><p>&nbsp;</p>
+<p>The mod mentioned above only lasted a coupe of months. Here is the 2nd attempt I did with a new module</p>
+<p>&nbsp;</p>
+<ul><li>﻿Change the large blue, (C28) from 1uF/250V to 470nf/400v</li>
+<li>Change the smaller blue, (C29) located close to the output connector, from 0.22uF/250V to 0.1uF/400V</li>
+<li>Change the 130V MOV (R47) in parallel with the input to 250V RMS</li>
+<li>Change the 130V MOV (R48) in series with the relay to 250V RMS</li>
+<li><span style="background-color:#ffff00;">Change the 220k 1/4W resistor (R21) going to the output connector, to 470k 1/2W</span></li>
+<li>Add a 100 Ohm/1W resistor in series with the 110v cam relay coil</li>
+</ul><p>&nbsp;</p>
+<p>The result looks like this</p>
+<p><img id="pbImage348166" style="border:0pt none;display:block;text-align:center;" src="{{ site.baseurl }}/assets/images/RR501 10432I 05.jpg" alt="" width="300" height="400" /></p>
+<p>&nbsp;</p>
+<p>﻿﻿</p>
+<!-- pbraw=eJzNVu1u2zYU/e+nuFCxLQZikZLl+COOsa5FsQwoCmRdun8GRVESa4oUSMpunm0/9kh7hV3KceCtztpmQzEjH6IknsN777nnumWVWLwweiusl7oCBjc3E5rArwmFm1fw1jLtuJD4GLyBNKXbQSeLRTnjk4SXnIo0LeYzNueFuEgmF4mg01k5m6XjaTbnZTrwshGLZEzHGX5mFwPZLlKaxOlkHCfZPE7G0wE32gvtR/6uFQsvPnhS+0YNNMOdnPmBaJhUizbfyY38vmFeMsc7oTmLuWliZgfh9dFW2krqhTaD0WgEL5ln8MooZXYO8MZg2a6eK1+brqrB18IKYPjrBAbGFFjhTGe5cGB0eAw7kcPZkkFtRXkV1d63C0J2u11sRWO8iI2tSGlFIazckNaa94J7Rz4klFhLolWyJGx1DqcBCsM2ePS425C6/WAtpjsOIUSr9PFtNdbBeMxTCJowvLLuvSHHu8end8vC5Mx6pvt8kZptctKYQpZ3WO/1Pp51qIE1au339Q6Iz14fXvoGK5bQLf7zBv8EEUSrLLANQ75qswva4HsRPSjIH0mntKaBgHEQEVxjzjlWXd3BWSMLQAo6hDzUJ0BosUNogbVgHmpWANPQtQXzogAuLe+kj+G5A4fk+lC0sq93UHErue+wqP3t3DBbgGN3DhKajdPrw/ucObG/T6c/ZTReknYVhPKtzl17eVgtZVOBLK6iNr9usFvGYzrLaATO3ylxFeXGogoWtPWg8cSX+MDyq4iUpE9DyF1PihdYqfdtFQFT/iqKYCcLX19FY4pgtZAYOC7m8wjIx5zTySR9Gmf2VM50Ssez6ZM4009yZmFxIs55Op9MnsQ5/uw4T1b5r6tfXFDRV+qk68LAD3vc7xxUaK8i9BYwh42QB40yXQTB4lUldG9YvvPGSqZ6w+obCg/SKQH9eSTapsQHHznYqQjuIdetlZrLVgm3Lo1dh3OuvVmnIYIvcrSEphndHlvaENtd6AJ7dyd98F+JnSs8mBIrLVq3T3unVkslV3/89vsLdLtK9D2qmMWrXHXiHM5epLPhvZd0r0g6obfBT7Ip1SVBRd0uCe4fBJAjBNcwpdCDHjDmQ1CG761EGUwqYoQXTefbzgcf0+jmxp7vqWicpkdsNA7cj7LhqLuF129uQWpomQ3U6hC1wJuBIXhgQLt5/fMnMRxOGPSxBwQrFLs7jfC8QJtEi6Pwpm5I8i5MNekwkFM4vRlz1twDciPVPRIJdfh7Q7yte2lBg5aNysLUsdxsMWcaDVwxF5LJEKVrRahqg01Quxh+DINW7m04RRGHudVgN19DIe/FsPf6vXpPNeO/VsX2/6SKs5tsOvxPtIFIs+EXKmTpWpyjB3NlfFNZ0+lixI0ydvGsxA+ll9ExH3rLBhKSHanp7CZNhlCZYJGPJmlfgbA1fbckgXf19ZSKcJ3yWE+zcaDkRvSW8+hAz2bJxcWjQ6eQrkXiRY7y2FyG76cjpmSlF+Hri7D/OJQmnz0IT44hFD3+hNWfW+C7YA== -->
