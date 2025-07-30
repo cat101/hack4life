@@ -63,7 +63,7 @@ footer_content: "Copyright &copy; 2009-2025 Matias Cuenca. Documentation of vari
 gh_edit_link: true
 gh_edit_link_text: "Edit this page on GitHub"
 gh_edit_repository: "https://github.com/cat101/hack4life"
-gh_edit_branch: "main"
+gh_edit_branch: "master"
 gh_edit_view_mode: "edit"
 
 # Build settings
