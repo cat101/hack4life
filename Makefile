@@ -29,13 +29,14 @@ clean: ## Clean up containers and rebuild
 	@echo "🗑️  Removing project Docker image..."
 	-docker rmi hack4life-jekyll:latest 2>/dev/null || true
 	@echo "🗑️  Removing build directories..."
-	rm -rf _site
-	rm -rf .jekyll-cache
-	rm -rf .jekyll-metadata
-	rm -rf .sass-cache
-	rm -rf vendor
-	rm -rf .bundle
-	rm -rf node_modules
+	rm -rf docs/_site
+	rm -rf docs/.jekyll-cache
+	rm -rf docs/.jekyll-metadata
+	rm -rf docs/.sass-cache
+	rm -rf docs/vendor
+	rm -rf docs/.bundle
+	rm -rf docs/Gemfile.lock
+	rm -rf docs/node_modules
 	@echo "✅ Cleanup complete!"
 
 rebuild: clean ## Clean and rebuild everything
