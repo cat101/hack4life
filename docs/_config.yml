@@ -3,6 +3,9 @@ description: A collection of hardware hacks and reverse engineering projects
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://cat101.github.io/hack4life" # the base hostname & protocol for your site, e.g. http://example.com
 
+# Repository information for GitHub metadata
+repository: cat101/hack4life
+
 # Theme settings
 theme: "just-the-docs"
 

@@ -46,7 +46,7 @@ Finally I put together a simple arduino sketch (see at the bottom of this page) 
 - BB → Some sort of checksum that I did not bother to decode
 
 ## Additional Resources
-For those interested in diving deeper into the reverse engineering process, you can browse the **[Exploration directory]({{ site.github.repository_url }}/tree/{{ site.github.source.branch | default: 'master' }}/docs/{{ page.path | remove: '.md' | remove: '/index' }}/Exploration)** on GitHub, which contains Arduino sketches, logic analyzer tools, raw recordings, and statistical analysis from the original research.
+For those interested in diving deeper into the reverse engineering process, you can browse the **[Exploration directory]({{ site.github.repository_url }}/tree/master/docs/{{ page.path | remove: '.md' | remove: '/index' }}/Exploration)** on GitHub, which contains Arduino sketches, logic analyzer tools, raw recordings, and statistical analysis from the original research.
 
 ## Arduino routine for reading the sensor
 
