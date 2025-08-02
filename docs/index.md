@@ -9,7 +9,7 @@ permalink: /
 # Hack4Life
 {: .fs-9 }
 
-A collection of hardware hacks and reverse engineering projects documenting various electronics modifications, dissections, and homebrew solutions.
+A collection of hardware dissections, hacks and reverse engineering projects.
 {: .fs-6 .fw-300 }
 
 ---
