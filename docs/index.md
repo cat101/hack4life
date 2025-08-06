@@ -22,7 +22,7 @@ This site documents various hardware hacking projects, electronics modifications
 Projects involving circuit analysis, modification, and reverse engineering of consumer electronics.
 
 ### 🔍 Dissections & Disassembly  
-Detailed teardowns and analysis of various electronic devices and appliances.
+Teardowns and analysis of various electronic devices and appliances.
 
 ---
 
