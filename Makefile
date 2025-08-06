@@ -58,3 +58,17 @@ serve: dev ## Alias for dev
 # Quick commands
 up: dev-bg ## Quick start in background
 down: stop ## Quick stop
+
+check-links: ## Check for broken links in the site
+	@echo "🔗 Checking for broken links..."
+	@echo "Note: This requires the 'broken-link-checker' npm package."
+	@echo "If not installed, run: npm install -g broken-link-checker"
+	@echo "Checking links in https://cat101.github.io/hack4life/"
+	# Uncomment the next line to install the package if needed
+	# Note: This requires Node.js and npm to be installed
+	# Uncomment the next line to install globally
+	#
+	# npm install broken-link-checker -g
+
+	blc -ro https://cat101.github.io/hack4life/
+# 	blc -ro https://cat101.github.io/CasaC/
