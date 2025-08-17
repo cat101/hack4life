@@ -44,8 +44,8 @@ back_to_top: true
 back_to_top_text: "Back to top"
 
 # Google Analytics Tracking (optional)
-# ga_tracking: UA-NNNNNNNN-N
-# ga_tracking_anonymize_ip: true
+ga_tracking: G-4QBSPK06EV
+ga_tracking_anonymize_ip: false
 
 # Callouts
 callouts:
